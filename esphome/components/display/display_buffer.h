@@ -549,7 +549,7 @@ class Image {
 
   virtual int get_current_frame() const;
 
-  void set_transparency(bool transparent) { transparent_ = transparent; }
+  virtual void set_transparency(bool transparent) { transparent_ = transparent; }
   bool has_transparency() const { return transparent_; }
 
  protected:
