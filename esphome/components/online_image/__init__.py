@@ -71,7 +71,7 @@ async def online_image_action_to_code(config, action_id, template_arg, args):
     paren = await cg.get_variable(config[CONF_ID])
     var = cg.new_Pvariable(action_id, template_arg, paren)
 
-    template_ = await cg.templatable(config[CONF_URL], args, cg.std_string)
+    template_ = await cg.templatable(config[CONF_URL], args, cg.const_char_ptr)
     cg.add(var.set_url(template_))
     return var
 
