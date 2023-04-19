@@ -44,10 +44,12 @@ size_t HOT PngDecoder::decode(HTTPClient &http, WiFiClient *stream, std::vector<
   uint8_t *buffer = buf.data();
   ESP_LOGD(TAG, "Buffer size: %d", buf.size());
 
-  while (http.connected()) {
+  int pending = http.getSize();
+
+  while (http.connected() && (pending > 0 || pending == -1)) {
     App.feed_wdt();
     size_t size = stream->available();
-    if (!size) {
+    if (!size && (pending > 0 || pending == -1)) {
       delay(1);
       continue;
     }
@@ -57,6 +59,7 @@ size_t HOT PngDecoder::decode(HTTPClient &http, WiFiClient *stream, std::vector<
     }
 
     int len = stream->readBytes(buffer + remain, size);
+    pending -= len;
     total += len;
     if (len > 0) {
       int fed = pngle_feed(pngle, buffer, remain + len);
