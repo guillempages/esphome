@@ -402,6 +402,12 @@ time:
       - at: "16:00:00"
         then:
           - logger.log: It's 16:00
+      - at: "13:37:42"
+        then:
+          - online_image.update_url:
+              id: online_rgba_image
+              url: http://www.example.org/example.png
+          - component.update: online_binary_image
 
 esp32_touch:
   setup_mode: true
@@ -709,3 +715,20 @@ switch:
           characteristic_uuid: 6490FAFE-0734-732C-8705-91B653A081FC
           value: !lambda |-
             return {0x13, 0x37};
+
+online_image:
+  - id: online_binary_image
+    url: http://www.libpng.org/pub/png/img_png/pnglogo-blk-tiny.png
+    type: BINARY
+    resize: 50x50
+  - id: online_binary_transparent_image
+    url: http://www.libpng.org/pub/png/img_png/pnglogo-blk-tiny.png
+    type: TRANSPARENT_BINARY
+    format: png
+  - id: online_rgba_image
+    url: http://www.libpng.org/pub/png/img_png/pnglogo-blk-tiny.png
+    type: RGBA
+  - id: online_rgb24_image
+    url: http://www.libpng.org/pub/png/img_png/pnglogo-blk-tiny.png
+    type: RGB24
+    use_transparency: true
