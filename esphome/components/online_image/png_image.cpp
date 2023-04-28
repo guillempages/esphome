@@ -53,7 +53,12 @@ size_t HOT PngDecoder::decode(HTTPClient &http, WiFiClient *stream, std::vector<
   int remain = 0;
   int total = 0;
   uint8_t *buffer = buf.data();
-  while (http.connected()) {
+
+  int file_size = http.getSize();
+
+  // keep downloading as long as client is connected and the whole file has not been fully downloaded
+  // HTTPClient returns -1 if server does not provide Content-Length header
+  while (http.connected() && (total < file_size || file_size == -1)) {
     App.feed_wdt();
     size_t size = stream->available();
     if (!size || size < 1024 && download_size_ - total > size) {
