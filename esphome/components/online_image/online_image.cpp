@@ -249,6 +249,7 @@ void OnlineImage::update() {
 
   std::unique_ptr<ImageDecoder> decoder;
 
+  http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
   int begin_status = http.begin(url_);
   if (!begin_status) {
     ESP_LOGE(TAG, "Could not download image from %s. Connection failed: %i", url_, begin_status);
