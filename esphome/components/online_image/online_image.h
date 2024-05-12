@@ -76,7 +76,7 @@ class OnlineImage : public PollingComponent, public image::Image {
 
   int get_position_(int x, int y) const { return ((x + y * buffer_width_) * image::image_type_to_bpp(type_)) / 8; }
 
-  ESPHOME_ALWAYS_INLINE bool auto_resize_() const { return fixed_width_ == 0 || fixed_height_ == 0; }
+  ALWAYS_INLINE  bool auto_resize_() const { return fixed_width_ == 0 || fixed_height_ == 0; }
 
   bool resize_(int width, int height);
   void draw_pixel_(int x, int y, Color color);
