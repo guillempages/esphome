@@ -9,6 +9,9 @@ static const char *const TAG = "online_image";
 #ifdef USE_ONLINE_IMAGE_BMP_SUPPORT
 #include "bmp_image.h"
 #endif
+#ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
+#include "jpeg_image.h"
+#endif
 #ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
 #include "png_image.h"
 #endif
@@ -123,17 +126,25 @@ void OnlineImage::update() {
 
 #ifdef USE_ONLINE_IMAGE_BMP_SUPPORT
   if (this->format_ == ImageFormat::BMP) {
+    ESP_LOGD(TAG, "Allocating BMP decoder");
     this->decoder_ = make_unique<BmpDecoder>(this);
   }
 #endif  // ONLINE_IMAGE_BMP_SUPPORT
+#ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
+  if (this->format_ == ImageFormat::JPEG) {
+    ESP_LOGD(TAG, "Allocating JPEG decoder");
+    this->decoder_ = esphome::make_unique<JpegDecoder>(this);
+  }
+#endif  // USE_ONLINE_IMAGE_JPEG_SUPPORT
 #ifdef USE_ONLINE_IMAGE_PNG_SUPPORT
   if (this->format_ == ImageFormat::PNG) {
+    ESP_LOGD(TAG, "Allocating PNG decoder");
     this->decoder_ = make_unique<PngDecoder>(this);
   }
 #endif  // ONLINE_IMAGE_PNG_SUPPORT
 
   if (!this->decoder_) {
-    ESP_LOGE(TAG, "Could not instantiate decoder. Image format unsupported.");
+    ESP_LOGE(TAG, "Could not instantiate decoder. Image format unsupported: %d", this->format_);
     this->end_connection_();
     this->download_error_callback_.call();
     return;

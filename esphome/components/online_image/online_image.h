@@ -23,7 +23,7 @@ using t_http_codes = enum {
 enum ImageFormat {
   /** Automatically detect from MIME type. Not supported yet. */
   AUTO,
-  /** JPEG format. Not supported yet. */
+  /** JPEG format. */
   JPEG,
   /** PNG format. */
   PNG,

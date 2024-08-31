@@ -60,6 +60,15 @@ class BMPFormat(Format):
         cg.add_define("USE_ONLINE_IMAGE_BMP_SUPPORT")
 
 
+class JPEGFormat(Format):
+    def __init__(self):
+        super().__init__("JPEG")
+
+    def actions(self):
+        cg.add_define("USE_ONLINE_IMAGE_JPEG_SUPPORT")
+        cg.add_library("JPEGDEC", "1.6.2", "https://github.com/bitbank2/JPEGDEC")
+
+
 class PNGFormat(Format):
     def __init__(self):
         super().__init__("PNG")
@@ -69,11 +78,11 @@ class PNGFormat(Format):
         cg.add_library("pngle", "1.0.2")
 
 
-# New formats can be added here.
 IMAGE_FORMATS = {
     x.image_type: x
     for x in (
         BMPFormat(),
+        JPEGFormat(),
         PNGFormat(),
     )
 }
