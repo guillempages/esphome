@@ -25,7 +25,7 @@ class JpegDecoder : public ImageDecoder {
   int HOT decode(uint8_t *buffer, size_t size) override;
 
  protected:
-  JPEGDEC jpeg_;
+  JPEGDEC jpeg_{};
 };
 
 }  // namespace online_image
