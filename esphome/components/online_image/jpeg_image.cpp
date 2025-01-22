@@ -23,13 +23,26 @@ static void draw_callback(const JPEGDRAW *pDraw) {
     for (uint32_t y = 0; y < pDraw->iHeight; y++) {
       int pixel = x * y * 4;
       Color color(pDraw->pPixels[pixel]);
-      // decoder->draw(x, y, 1, 1, color);
     }
   }
 }
 
-void JpegDecoder::prepare(uint32_t download_size) {
-  ImageDecoder::prepare(download_size);
+void JpegDecoder::prepare(size_t download_size) { ImageDecoder::prepare(download_size); }
+
+int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
+  // TODO: check that download buffer is big enough
+  if (size < download_size_) {
+    ESP_LOGD(TAG, "Download not complete. Size: %d", size);
+    return 0;
+  }
+
+  if (!this->jpeg_.openRAM(buffer, size, draw_callback)) {
+    ESP_LOGE(TAG, "Could not open image for decoding.");
+    return -1;
+  }
+  ESP_LOGD(TAG, "Image size: %d x %d, orientation: %d, bpp: %d", this->jpeg_.getWidth(), this->jpeg_.getHeight(),
+           this->jpeg_.getOrientation(), this->jpeg_.getBpp());
+
   this->jpeg_.setUserPointer(this);
   // TODO: get image destination type and decode accordingly.
   this->jpeg_.setPixelType(RGB8888);
