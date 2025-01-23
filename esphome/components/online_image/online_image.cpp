@@ -35,6 +35,7 @@ OnlineImage::OnlineImage(const std::string &url, int width, int height, ImageFor
     : Image(nullptr, 0, 0, type, transparency),
       buffer_(nullptr),
       download_buffer_(download_buffer_size),
+      download_buffer_initial_size_(download_buffer_size),
       format_(format),
       fixed_width_(width),
       fixed_height_(height) {
@@ -150,7 +151,7 @@ void OnlineImage::update() {
     return;
   }
   this->decoder_->prepare(total_size);
-  ESP_LOGI(TAG, "Downloading image");
+  ESP_LOGI(TAG, "Downloading image (Size: %d)", total_size);
 }
 
 void OnlineImage::loop() {
@@ -174,6 +175,10 @@ void OnlineImage::loop() {
   }
   size_t available = this->download_buffer_.free_capacity();
   if (available) {
+    // Some decoders need to fully download the image before downloading.
+    // In case of huge images, don't wait blocking until the whole image has been downloaded,
+    // use smaller chunks
+    available = std::min(available, this->download_buffer_initial_size_);
     auto len = this->downloader_->read(this->download_buffer_.append(), available);
     if (len > 0) {
       this->download_buffer_.write(len);

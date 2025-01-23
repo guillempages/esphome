@@ -2,6 +2,7 @@
 #ifdef USE_ONLINE_IMAGE_JPEG_SUPPORT
 
 #include "esphome/components/display/display_buffer.h"
+#include "esphome/core/application.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/log.h"
 
@@ -20,6 +21,9 @@ namespace online_image {
 static int draw_callback(JPEGDRAW *jpeg) {
   ImageDecoder *decoder = (ImageDecoder *) jpeg->pUser;
 
+  // Some very big images take too long to decode, so feed the watchdog on each callback
+  // to avoid crashing.
+  App.feed_wdt();
   size_t position = 0;
   for (size_t y = 0; y < jpeg->iHeight; y++) {
     for (size_t x = 0; x < jpeg->iWidth; x++) {
@@ -47,8 +51,8 @@ void JpegDecoder::prepare(size_t download_size) {
 }
 
 int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
-  if (size < download_size_) {
-    ESP_LOGD(TAG, "Download not complete. Size: %d", size);
+  if (size < this->download_size_) {
+    ESP_LOGD(TAG, "Download not complete. Size: %d/%d", size, this->download_size_);
     return 0;
   }
 
@@ -62,13 +66,11 @@ int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
   this->jpeg_.setUserPointer(this);
   this->jpeg_.setPixelType(RGB8888);
   this->set_size(this->jpeg_.getWidth(), this->jpeg_.getHeight());
-  ESP_LOGD(TAG, "This: %x", this);
   if (!this->jpeg_.decode(0, 0, 0)) {
     ESP_LOGE(TAG, "Error while decoding.");
     this->jpeg_.close();
-    return -2;
+    return DECODE_ERROR_UNSUPPORTED_FORMAT;
   }
-  ESP_LOGD(TAG, "JPEG Decoded!");
   this->decoded_bytes_ = size;
   this->jpeg_.close();
   return size;
