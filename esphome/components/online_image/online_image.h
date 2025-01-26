@@ -161,6 +161,8 @@ class OnlineImage : public PollingComponent,
    */
   int buffer_height_;
 
+  time_t start_time_;
+
   friend bool ImageDecoder::set_size(int width, int height);
   friend void ImageDecoder::draw(int x, int y, int w, int h, const Color &color);
 };

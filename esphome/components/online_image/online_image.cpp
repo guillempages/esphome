@@ -152,6 +152,7 @@ void OnlineImage::update() {
   }
   this->decoder_->prepare(total_size);
   ESP_LOGI(TAG, "Downloading image (Size: %d)", total_size);
+  this->start_time_ = ::time(nullptr);
 }
 
 void OnlineImage::loop() {
@@ -165,6 +166,7 @@ void OnlineImage::loop() {
     this->height_ = buffer_height_;
     ESP_LOGD(TAG, "Image fully downloaded, read %zu bytes, width/height = %d/%d", this->downloader_->get_bytes_read(),
              this->width_, this->height_);
+    ESP_LOGD(TAG, "Total time: %lds", ::time(nullptr) - this->start_time_);
     this->end_connection_();
     this->download_finished_callback_.call();
     return;

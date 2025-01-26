@@ -52,7 +52,7 @@ void JpegDecoder::prepare(size_t download_size) {
 
 int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
   if (size < this->download_size_) {
-    ESP_LOGD(TAG, "Download not complete. Size: %d/%d", size, this->download_size_);
+    ESP_LOGV(TAG, "Download not complete. Size: %d/%d", size, this->download_size_);
     return 0;
   }
 
@@ -60,8 +60,7 @@ int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
     ESP_LOGE(TAG, "Could not open image for decoding.");
     return -1;
   }
-  ESP_LOGD(TAG, "Image size: %d x %d, orientation: %d, bpp: %d", this->jpeg_.getWidth(), this->jpeg_.getHeight(),
-           this->jpeg_.getOrientation(), this->jpeg_.getBpp());
+  ESP_LOGD(TAG, "Image size: %d x %d, bpp: %d", this->jpeg_.getWidth(), this->jpeg_.getHeight(), this->jpeg_.getBpp());
 
   this->jpeg_.setUserPointer(this);
   this->jpeg_.setPixelType(RGB8888);
