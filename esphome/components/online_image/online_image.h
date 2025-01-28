@@ -128,8 +128,8 @@ class OnlineImage : public PollingComponent,
   DownloadBuffer download_buffer_;
   /**
    * This is the *initial* size of the download buffer, not the current size.
-   * The download buffer can be resized at runtime; the download_buffer_size_ will
-   * *not* change even if the download buffer has been resized.
+   * The download buffer can be resized at runtime; the download_buffer_initial_size_
+   * will *not* change even if the download buffer has been resized.
    */
   size_t download_buffer_initial_size_;
 

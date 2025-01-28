@@ -86,6 +86,7 @@ IMAGE_FORMATS = {
         PNGFormat(),
     )
 }
+IMAGE_FORMATS.update({"JPG": IMAGE_FORMATS["JPEG"]})
 
 OnlineImage = online_image_ns.class_("OnlineImage", cg.PollingComponent, Image_)
 
