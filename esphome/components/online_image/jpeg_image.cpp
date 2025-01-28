@@ -58,7 +58,15 @@ int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
 
   if (!this->jpeg_.openRAM(buffer, size, draw_callback)) {
     ESP_LOGE(TAG, "Could not open image for decoding.");
-    return -1;
+    return DECODE_ERROR_INVALID_TYPE;
+  }
+  auto jpeg_type = this->jpeg_.getJPEGType();
+  if (jpeg_type == JPEG_MODE_PROGRESSIVE) {
+    ESP_LOGE(TAG, "Progressive JPEG images not supported");
+    return DECODE_ERROR_INVALID_TYPE;
+  } else if (jpeg_type == JPEG_MODE_INVALID) {
+    ESP_LOGE(TAG, "Unsupported JPEG image");
+    return DECODE_ERROR_INVALID_TYPE;
   }
   ESP_LOGD(TAG, "Image size: %d x %d, bpp: %d", this->jpeg_.getWidth(), this->jpeg_.getHeight(), this->jpeg_.getBpp());
 
