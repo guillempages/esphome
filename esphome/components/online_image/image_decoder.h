@@ -29,8 +29,12 @@ class ImageDecoder {
    * @brief Initialize the decoder.
    *
    * @param download_size The total number of bytes that need to be downloaded for the image.
+   * @return int          Returns 0 on success, a {@see DecodeError} value in case of an error.
    */
-  virtual void prepare(size_t download_size) { this->download_size_ = download_size; }
+  virtual int prepare(size_t download_size) {
+    this->download_size_ = download_size;
+    return 0;
+  }
 
   /**
    * @brief Decode a part of the image. It will try reading from the buffer.

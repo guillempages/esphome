@@ -150,7 +150,13 @@ void OnlineImage::update() {
     this->download_error_callback_.call();
     return;
   }
-  this->decoder_->prepare(total_size);
+  auto prepare_result = this->decoder_->prepare(total_size);
+  if (prepare_result < 0) {
+    ESP_LOGE(TAG, "Error while preparing image download: %d", prepare_result);
+    this->end_connection_();
+    this->download_error_callback_.call();
+    return;
+  }
   ESP_LOGI(TAG, "Downloading image (Size: %d)", total_size);
   this->start_time_ = ::time(nullptr);
 }
