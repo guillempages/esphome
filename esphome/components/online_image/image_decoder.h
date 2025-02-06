@@ -87,10 +87,7 @@ class ImageDecoder {
 
 class DownloadBuffer {
  public:
-  DownloadBuffer(size_t size) : size_(size) {
-    this->buffer_ = this->allocator_.allocate(size);
-    this->reset();
-  }
+  DownloadBuffer(size_t size);
 
   virtual ~DownloadBuffer() { this->allocator_.deallocate(this->buffer_, this->size_); }
 
