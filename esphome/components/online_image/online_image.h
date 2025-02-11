@@ -101,7 +101,21 @@ class OnlineImage : public PollingComponent,
 
   ESPHOME_ALWAYS_INLINE bool auto_resize_() const { return this->fixed_width_ == 0 || this->fixed_height_ == 0; }
 
-  bool resize_(int width, int height);
+  /**
+   * @brief Resize the image buffer to the requested dimensions.
+   *
+   * The buffer will be allocated if not existing.
+   * If the dimensions have been fixed in the yaml config, the buffer will be created
+   * with those dimensions and not resized, even on request.
+   * Otherwise, the old buffer will be deallocated and a new buffer with the requested
+   * allocated
+   *
+   * @param width
+   * @param height
+   * @return 0 if no reallocation was needed, -1 if no memory could be allocated, the
+   *   size of the new buffer otherwise.
+   */
+  ssize_t resize_(int width, int height);
 
   /**
    * @brief Draw a pixel into the buffer.

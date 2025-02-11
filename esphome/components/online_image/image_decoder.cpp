@@ -9,7 +9,9 @@ namespace online_image {
 static const char *const TAG = "online_image.decoder";
 
 bool ImageDecoder::set_size(int width, int height) {
-  bool resized = this->image_->resize_(width, height);
+  // Consider a noop (buffer already existing but no need to resize) a success.
+  bool resized = this->image_->resize_(width, height) >= 0;
+
   this->x_scale_ = static_cast<double>(this->image_->buffer_width_) / width;
   this->y_scale_ = static_cast<double>(this->image_->buffer_height_) / height;
   return resized;

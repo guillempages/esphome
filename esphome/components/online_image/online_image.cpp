@@ -64,7 +64,7 @@ void OnlineImage::release() {
   }
 }
 
-bool OnlineImage::resize_(int width_in, int height_in) {
+ssize_t OnlineImage::resize_(int width_in, int height_in) {
   int width = this->fixed_width_;
   int height = this->fixed_height_;
   if (this->auto_resize_()) {
@@ -75,22 +75,23 @@ bool OnlineImage::resize_(int width_in, int height_in) {
     }
   }
   if (this->buffer_) {
-    return false;
+    // Buffer already allocated => no need to resize
+    return 0;
   }
-  size_t new_size = this->get_buffer_size_(width, height);
+  ssize_t new_size = this->get_buffer_size_(width, height);
   ESP_LOGD(TAG, "Allocating new buffer of %zu bytes", new_size);
   this->buffer_ = this->allocator_.allocate(new_size);
   if (this->buffer_ == nullptr) {
     ESP_LOGE(TAG, "allocation of %zu bytes failed. Biggest block in heap: %zu Bytes", new_size,
              this->allocator_.get_max_free_block_size());
     this->end_connection_();
-    return false;
+    return -1;
   }
   this->buffer_width_ = width;
   this->buffer_height_ = height;
   this->width_ = width;
   ESP_LOGV(TAG, "New size: (%d, %d)", width, height);
-  return true;
+  return new_size;
 }
 
 void OnlineImage::update() {

@@ -73,7 +73,9 @@ int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
 
   this->jpeg_.setUserPointer(this);
   this->jpeg_.setPixelType(RGB8888);
-  this->set_size(this->jpeg_.getWidth(), this->jpeg_.getHeight());
+  if (!this->set_size(this->jpeg_.getWidth(), this->jpeg_.getHeight())) {
+    return DECODE_ERROR_OUT_OF_MEMORY;
+  }
   if (!this->jpeg_.decode(0, 0, 0)) {
     ESP_LOGE(TAG, "Error while decoding.");
     this->jpeg_.close();
