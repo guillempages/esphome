@@ -99,7 +99,7 @@ class OnlineImage : public PollingComponent,
 
   int get_position_(int x, int y) const { return (x + y * this->buffer_width_) * this->get_bpp() / 8; }
 
-  ESPHOME_ALWAYS_INLINE bool auto_resize_() const { return this->fixed_width_ == 0 || this->fixed_height_ == 0; }
+  ESPHOME_ALWAYS_INLINE bool is_auto_resize_() const { return this->fixed_width_ == 0 || this->fixed_height_ == 0; }
 
   /**
    * @brief Resize the image buffer to the requested dimensions.
@@ -112,10 +112,9 @@ class OnlineImage : public PollingComponent,
    *
    * @param width
    * @param height
-   * @return 0 if no reallocation was needed, -1 if no memory could be allocated, the
-   *   size of the new buffer otherwise.
+   * @return 0 if no memory could be allocated, the size of the new buffer otherwise.
    */
-  ssize_t resize_(int width, int height);
+  size_t resize_(int width, int height);
 
   /**
    * @brief Draw a pixel into the buffer.

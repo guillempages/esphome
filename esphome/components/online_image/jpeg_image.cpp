@@ -58,7 +58,7 @@ int HOT JpegDecoder::decode(uint8_t *buffer, size_t size) {
   }
 
   if (!this->jpeg_.openRAM(buffer, size, draw_callback)) {
-    ESP_LOGE(TAG, "Could not open image for decoding.");
+    ESP_LOGE(TAG, "Could not open image for decoding: %d", this->jpeg_.getLastError());
     return DECODE_ERROR_INVALID_TYPE;
   }
   auto jpeg_type = this->jpeg_.getJPEGType();
